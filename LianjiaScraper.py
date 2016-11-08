@@ -31,7 +31,7 @@ def getInfosInAPage(bsObj):
         
 
 def getInfosInALi(li):
-    infos = {}
+    infos = {'标题': '', '建成年份': '', '层数': '', '总价': '', '地址': '', '户型': '', '朝向': '', '均价': '', '面积': ''}
     address = ''
     ceng = ''
     chaoXiang = ''
@@ -45,19 +45,18 @@ def getInfosInALi(li):
         infos['标题'] = infoPanel.h2.a.get_text()
         #print(infos['标题'])
         
-        info = infoPanel.find('div', {'class': 'other'}).get_text().replace('\t', '').replace('\n','').split('|')
-        #print(info)
-        address += info[0]
-        ceng = info[1].replace('\r', '')
-        infos['层数'] = ceng
-        if(len(info) >= 3):
-            chaoXiang = info[2].replace('\r', '')
-        infos['朝向'] = chaoXiang
-        if(len(info) == 4):
-            year = info[3].replace('\r', '')
-        infos['建成年份'] = year
+        info = infoPanel.find('div', {'class': 'other'}).get_text().replace('\t', '').replace('\n','').replace('\r', '').split('|')
+        for item in info:
+            if(item.find('层') != -1):
+               infos['层数'] = item
+            elif(item.find('建') != -1):
+                infos['建成年份'] = item
+            elif(item.find('朝') != -1):
+                infos['朝向'] = item
+            else:
+               address += item
         #print(infos)
-            
+
         info = infoPanel.find('div', {'class': 'where'}).get_text().replace('\xa0',' ').replace('\r', '').replace('\t', '').lstrip().rstrip().replace('\n', '').split(' ')
         #print(info)
         address += info[0]
